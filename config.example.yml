@@ -1,0 +1,132 @@
+# PLEXCollect Configuration Example
+# Copy this file to config.yaml and fill in your actual values
+
+plex:
+  server_url: "http://localhost:32400"  # Your Plex server URL (e.g., http://192.168.1.100:32400)
+  token: "YOUR_PLEX_TOKEN_HERE"  # Your Plex authentication token
+  library_sections:  # Optional: Library sections to scan (leave empty for all movie/TV sections)
+    - "Movies"
+    - "TV Shows"
+
+openai:
+  api_key: "YOUR_OPENAI_API_KEY_HERE"  # Your OpenAI API key (starts with sk-proj- or sk-)
+  model: "o4-mini"  # Model to use: o4-mini (recommended), o1-mini, gpt-4o-mini, gpt-4o, gpt-4
+  max_tokens: 4000  # Max tokens per response (ignored for o1/o4 models but kept for compatibility)
+  temperature: 0.1  # Model creativity (0.0-1.0, lower = more consistent, ignored for o1/o4 models)
+  batch_size: 10  # Number of items to process per batch (recommended: 5-20)
+  rate_limit:
+    requests_per_minute: 20  # Adjust based on your OpenAI tier
+    tokens_per_minute: 40000  # Adjust based on your OpenAI tier
+
+collections:
+  default_categories:
+    # Holiday Collections
+    - name: "Christmas Movies"
+      description: "Movies with Christmas themes, settings, or holiday spirit"
+      prompt: "Is this a Christmas movie or does it have significant Christmas themes?"
+    
+    - name: "Halloween Movies"
+      description: "Movies perfect for Halloween viewing - horror, thriller, or spooky themes"
+      prompt: "Is this a movie suitable for Halloween viewing with horror, thriller, or spooky themes?"
+    
+    - name: "Thanksgiving Movies"
+      description: "Movies with Thanksgiving themes or family gathering themes"
+      prompt: "Is this a Thanksgiving movie or does it prominently feature Thanksgiving themes, family gatherings, or gratitude?"
+    
+    # Major Franchise Collections (Chronological Order)
+    - name: "Star Wars Saga"
+      description: "Star Wars movies in chronological story order"
+      prompt: "Is this a Star Wars movie? If yes, what is its chronological position in the Star Wars timeline?"
+      franchise: true
+      
+    - name: "Marvel Cinematic Universe"
+      description: "MCU movies in chronological timeline order"
+      prompt: "Is this an MCU (Marvel Cinematic Universe) movie? If yes, where does it fit in the MCU timeline?"
+      franchise: true
+      
+    - name: "Indiana Jones Adventures"
+      description: "Indiana Jones movies in chronological story order"
+      prompt: "Is this an Indiana Jones movie? If yes, what is its chronological position in Indiana Jones' adventures?"
+      franchise: true
+      
+    - name: "Fast & Furious Franchise"
+      description: "Fast & Furious movies in chronological story order"
+      prompt: "Is this a Fast & Furious franchise movie? If yes, where does it fit chronologically in the story timeline?"
+      franchise: true
+      
+    - name: "DC Extended Universe"
+      description: "DCEU movies in chronological timeline order"
+      prompt: "Is this a DC Extended Universe (DCEU) movie? If yes, where does it fit in the DCEU timeline?"
+      franchise: true
+      
+    - name: "Mission: Impossible Series"
+      description: "Mission: Impossible movies in chronological order"
+      prompt: "Is this a Mission: Impossible movie? If yes, what is its chronological position in the series?"
+      franchise: true
+      
+    - name: "James Bond Collection"
+      description: "James Bond movies grouped by era and chronological order"
+      prompt: "Is this a James Bond movie? If yes, which Bond era and chronological position?"
+      franchise: true
+      
+    - name: "X-Men Universe"
+      description: "X-Men movies in chronological timeline order"
+      prompt: "Is this an X-Men universe movie? If yes, where does it fit in the X-Men timeline?"
+      franchise: true
+
+  auto_create: true  # Automatically create collections that don't exist in Plex
+  update_existing: true  # Update existing collections with new items
+  remove_missing: false  # Remove items from collections if they no longer match (use with caution)
+
+database:
+  path: "data/collections.db"  # SQLite database file location
+  backup_enabled: true  # Enable automatic database backups
+  backup_interval_hours: 24  # Hours between automatic backups
+
+scheduling:
+  auto_scan_enabled: false  # Enable automatic periodic scanning
+  scan_interval_hours: 24  # Hours between automatic scans
+  scan_time: "02:00"  # Time to run automatic scans (24-hour format HH:MM)
+
+logging:
+  level: "INFO"  # Logging level: DEBUG, INFO, WARNING, ERROR
+  file_enabled: true  # Enable logging to file
+  file_path: "data/plexcollect.log"  # Log file location
+  max_file_size_mb: 10  # Maximum log file size before rotation
+  backup_count: 5  # Number of backup log files to keep
+
+# Configuration Notes:
+# 
+# Getting Your Plex Token:
+# 1. Open Plex Web (usually at http://localhost:32400/web)
+# 2. Go to Settings > General > Advanced
+# 3. Copy the "X-Plex-Token" value
+# OR visit: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+#
+# Getting Your OpenAI API Key:
+# 1. Visit https://platform.openai.com/api-keys
+# 2. Create a new secret key
+# 3. Add billing information to your OpenAI account
+# 4. Note: API usage costs money based on tokens used
+#
+# Model Recommendations:
+# - o4-mini: Best reasoning model with large response window (recommended)
+# - o1-mini: Good reasoning model, slightly more expensive
+# - gpt-4o-mini: Cheapest option, but smaller response window
+# - gpt-4o: More expensive but higher quality
+#
+# Rate Limiting:
+# - Adjust based on your OpenAI subscription tier
+# - Free tier: Much lower limits
+# - Paid tier: Higher limits as shown in example
+#
+# Cost Optimization Tips:
+# - Use smaller batch_size for testing (5-10)
+# - Use cheaper models like gpt-4o-mini for initial testing
+# - Run incremental scans instead of full library scans
+# - Monitor costs in the Statistics page of the web interface
+#
+# Franchise Collections:
+# - Set franchise: true for collections that should be ordered chronologically
+# - PLEXCollect will automatically order these by story timeline, not release date
+# - For example: Star Wars Episode I comes before Episode IV chronologically

@@ -1,0 +1,1 @@
+"""Test suite for PLEXCollect franchise detection and ordering system."""

@@ -1,0 +1,28 @@
+# Core Dependencies
+plexapi>=4.15.1
+openai>=1.58.1
+streamlit>=1.39.0
+fastapi>=0.115.5
+uvicorn>=0.32.1
+
+# Database and Data Processing
+sqlalchemy>=2.0.36
+pandas>=2.2.3
+pydantic>=2.10.2
+
+# Configuration and Utilities
+pyyaml>=6.0.2
+python-dotenv>=1.0.1
+tenacity>=9.0.0
+
+# Async and HTTP
+aiohttp>=3.11.10
+asyncio-throttle>=1.0.2
+
+# Logging and Monitoring
+rich>=13.9.4
+tqdm>=4.67.1
+
+# Development and Testing
+pytest>=8.3.4
+pytest-asyncio>=0.24.0
