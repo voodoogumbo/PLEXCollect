@@ -1,4 +1,4 @@
-# PLEXCollect 🎬
+# PLEXCollect
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -6,24 +6,30 @@
 [![Plex](https://img.shields.io/badge/Works%20with-Plex-orange.svg)](https://www.plex.tv/)
 [![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-red.svg)](https://streamlit.io/)
 
-**AI-Powered Plex Collection Manager**
+**AI-Powered Vibe Collections for Plex**
 
-PLEXCollect is a local web application that automatically creates and manages Plex collections using AI classification. It scans your Plex library, uses OpenAI to intelligently categorize content, and creates collections like "Halloween Movies", "Christmas Movies", "Marvel Cinematic Universe", and more - all in perfect chronological order for franchises!
+PLEXCollect creates collections that tools like Kometa can't: subjective, taste-based groupings powered by AI. Instead of "movies tagged Action on TMDb", think **"cozy movies perfect for a rainy Sunday"** or **"films with unreliable narrators"**. Describe the collection you want in plain English and PLEXCollect builds it from your library.
 
-⭐ **Star this repo if you find it useful!** ⭐
+## What Makes This Different from Kometa?
 
-## ✨ Features
+Kometa (Plex Meta Manager) is great for factual collections pulled from IMDb/TMDb metadata -- holidays, genres, studios, decades. PLEXCollect focuses on what metadata databases *can't* capture:
 
-- 🤖 **AI-Powered Classification** - Uses OpenAI o4-mini/GPT models to intelligently categorize your media
-- 🎬 **Franchise Chronological Ordering** - Automatically orders franchise movies by story timeline (not release date)
-- 📚 **Automatic Collection Management** - Creates and updates Plex collections automatically
-- 🌐 **Modern Web Interface** - Beautiful Streamlit web interface for configuration and monitoring
-- ⚡ **Ultra-Efficient Mega-Batch Processing** - Process 800+ movies for ~$0.18 (vs $235 with old methods)
-- 📊 **Comprehensive Statistics** - Track AI usage, costs, and collection performance
-- 🔧 **Flexible Configuration** - Highly configurable categories, prompts, and behavior
-- 💾 **Local Storage** - All data stored locally in SQLite database - your data stays private
-- 🔄 **Incremental Updates** - Smart scanning to only process new or changed items
-- 🎯 **Force Re-classification** - Manual override system for fine-tuning collections
+- **Vibe-based categories**: "Emotional Gut Punches", "Late Night Weird", "Background Vibes"
+- **Natural language collection builder**: Type "movies about found family and belonging" and get a curated collection from your own library
+- **Subjective AI classification**: Uses GPT-4o-mini to understand tone, mood, and feel -- not just tags
+
+Use Kometa for factual collections. Use PLEXCollect for everything else.
+
+## Features
+
+- **Natural Language Collection Builder** -- Describe any collection in plain English and search your library
+- **AI-Powered Vibe Classification** -- Categorize media by mood, tone, and feel using GPT-4o-mini
+- **Mega-Batch Processing** -- Process 800+ movies for ~$0.18 with smart batching
+- **Automatic Collection Management** -- Creates and updates Plex collections automatically
+- **Modern Web Interface** -- Streamlit-based UI for configuration, scanning, and collection building
+- **Incremental Updates** -- Only processes new or changed items
+- **Cost Tracking** -- Real-time monitoring of AI usage and spending
+- **Local Storage** -- All data in SQLite, your data stays private
 
 ## Prerequisites
 
@@ -32,7 +38,7 @@ PLEXCollect is a local web application that automatically creates and manages Pl
 - OpenAI API key
 - Network access to both Plex server and OpenAI API
 
-## 🚀 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -55,29 +61,26 @@ PLEXCollect is a local web application that automatically creates and manages Pl
    ```bash
    cp config.example.yml config.yaml
    ```
-   - Edit `config.yaml` with your details:
+   Edit `config.yaml` with your details:
 
    ```yaml
    plex:
-     server_url: "http://localhost:32400"  # Your Plex server URL
-     token: "your-plex-token-here"         # Your Plex authentication token
-     library_sections:                     # Optional: specific sections to scan
+     server_url: "http://localhost:32400"
+     token: "your-plex-token-here"
+     library_sections:
        - "Movies"
-       - "TV Shows"
 
-   openai:
-     api_key: "your-openai-api-key-here"   # Your OpenAI API key
-     model: "gpt-4"                        # Model to use (gpt-4, gpt-3.5-turbo, etc.)
-     batch_size: 10                        # Items to process per batch
+   ai:
+     api_key: "your-openai-api-key-here"
+     model: "gpt-4o-mini"              # Recommended: fast and cheap
+     batch_size: 10
    ```
 
-4. **Get your Plex token**
+5. **Get your Plex token**
    - Visit https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-   - Or use the web interface: Settings → General → Advanced → Copy token
 
-5. **Get your OpenAI API key**
+6. **Get your OpenAI API key**
    - Visit https://platform.openai.com/api-keys
-   - Create a new API key and add billing information
 
 ## Usage
 
@@ -87,162 +90,96 @@ PLEXCollect is a local web application that automatically creates and manages Pl
 streamlit run main.py
 ```
 
-The web interface will open in your browser at `http://localhost:8501`
+The web interface opens at `http://localhost:8501`.
 
-### First Time Setup
+### Collection Builder
 
-1. **Test Connections**
-   - Go to Configuration page
-   - Test both Plex and OpenAI connections
-   - Verify your library sections are detected
+The headline feature. Go to the **Collection Builder** page and type what you want:
 
-2. **Review Categories**
-   - Check the Categories page to see default collection categories
-   - Categories include: Action Movies, Horror Movies, Christmas Movies, etc.
+- "movies about found family and belonging"
+- "films with unreliable narrators"
+- "cozy movies for a rainy Sunday"
+- "visually stunning cinematography"
 
-3. **Run Your First Scan**
-   - Go to Library Scan page
-   - Select library sections to scan
-   - Select categories to process
-   - Click "Start Full Scan"
+PLEXCollect searches your library using AI, shows matching results, suggests a collection name, and creates the collection in Plex with one click. Past queries are saved so you can refresh them as your library grows.
 
-### Web Interface Overview
+### Vibe Categories
 
-- **🏠 Dashboard** - Overview of statistics and recent activity
-- **⚙️ Configuration** - Test connections and view current settings
-- **🔍 Library Scan** - Run scans and monitor progress
-- **📊 Categories** - View and manage collection categories
-- **📈 Statistics** - AI usage stats, costs, and performance metrics
-- **🔧 System** - Database maintenance and system information
+PLEXCollect ships with 10 default vibe-based categories:
 
-## Configuration Options
+| Category | What It Captures |
+|----------|-----------------|
+| Cozy Comfort Movies | Warm, comforting films for a blanket-and-tea evening |
+| Mind-Bending Movies | Films that question reality and keep you thinking |
+| Visually Stunning | Cinematography-driven films that are a feast for the eyes |
+| Date Night Movies | Romantic, fun, or sophisticated films for two |
+| Background Vibes | Easy-watching films that don't demand full attention |
+| Emotional Gut Punches | Films that hit hard emotionally |
+| Hidden Gems | Under-the-radar films that deserve more attention |
+| Adrenaline Rush | Non-stop intensity and action |
+| Late Night Weird | Surreal, cult, experimental films for after midnight |
+| Kids Can Watch Too | Family-appropriate films that adults genuinely enjoy |
 
-### Collection Categories
+Customize these or add your own in `config.yaml`.
 
-You can customize collection categories in `config.yaml`:
+### Web Interface
+
+- **Dashboard** -- Overview of statistics and quick actions
+- **Configuration** -- Test connections and view settings
+- **Library Scan** -- Run scans and monitor progress
+- **Collection Builder** -- Natural language collection creation
+- **Categories** -- View and manage vibe categories
+- **Statistics** -- AI usage, costs, and performance
+- **System** -- Database maintenance and info
+
+## Cost Estimates
+
+PLEXCollect uses **gpt-4o-mini** by default ($0.15 per 1M input tokens), with mega-batch optimization that processes ~40 movies per API call.
+
+| Library Size | Estimated Cost per Full Scan |
+|-------------|----------------------------|
+| < 1,000 items | $0.05 - $0.25 |
+| 1,000 - 5,000 items | $0.25 - $1.25 |
+| > 5,000 items | $1.25+ |
+
+Incremental scans (only new items) cost a fraction of a full scan. Real-world result: 721 movies across 7 categories for $0.18.
+
+## Configuration
+
+### AI Settings
+
+```yaml
+ai:
+  provider: "openai"           # Currently supported: openai
+  api_key: "sk-..."
+  model: "gpt-4o-mini"         # Recommended for cost/quality balance
+  max_tokens: 4000
+  temperature: 0.3             # Lower = more consistent
+  batch_size: 10
+  rate_limit:
+    requests_per_minute: 20
+    tokens_per_minute: 40000
+```
+
+### Custom Categories
 
 ```yaml
 collections:
   default_categories:
-    - name: "Sci-Fi Movies"
-      description: "Science fiction films with futuristic themes"
-      prompt: "Is this a science fiction movie with futuristic, space, or advanced technology themes?"
-    
-    - name: "Feel-Good Movies"
-      description: "Uplifting, positive movies that make you feel good"
-      prompt: "Is this an uplifting, feel-good movie with positive themes and happy endings?"
+    - name: "Heist Movies"
+      description: "Clever heist and con artist films"
+      prompt: "Is this a heist, con, or caper movie where the plot revolves around pulling off a scheme?"
 ```
-
-### OpenAI Settings
-
-- **Model**: Choose between `gpt-4`, `gpt-3.5-turbo`, `gpt-4o`, etc.
-- **Batch Size**: Number of items to process per API call (1-20 recommended)
-- **Rate Limiting**: Requests per minute and tokens per minute limits
-- **Temperature**: AI creativity level (0.0-1.0, lower = more consistent)
-
-### Plex Settings
-
-- **Library Sections**: Specific sections to scan (leave empty for all)
-- **Collection Settings**: Auto-create, update behavior, etc.
-
-## 💰 Cost Management & Efficiency
-
-PLEXCollect uses revolutionary **mega-batch optimization** to dramatically reduce AI costs:
-
-### Real-World Results ⚡
-- **721 movies** processed across **7 categories** 
-- **Total cost: $0.18** (instead of estimated $235 with individual requests)
-- **99.9% cost reduction** through smart batching and o4-mini optimization
-- **Franchise chronological ordering** automatically applied
-
-### Cost-Saving Features
-- **Mega-Batch Processing**: Process 40+ movies per API call
-- **Intelligent Chunking**: Automatically splits large libraries
-- **Rate Limiting**: Respects OpenAI limits to avoid errors
-- **Incremental Scans**: Only processes new/changed items
-- **Model Optimization**: Uses efficient o4-mini by default
-- **Real-Time Cost Tracking**: Monitor spending in the web interface
-
-### Estimated Costs (with mega-batch optimization)
-- **Small library** (< 1,000 items): $0.05-0.25 per full scan
-- **Medium library** (1,000-5,000 items): $0.25-1.25 per full scan  
-- **Large library** (> 5,000 items): $1.25+ per full scan
-
-*Compare this to $30-235+ with traditional per-movie API calls!*
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Plex Connection Failed**
-   - Verify Plex server URL and port
-   - Check authentication token
-   - Ensure network connectivity
-
-2. **OpenAI API Errors**
-   - Verify API key is correct and active
-   - Check billing account has funds
-   - Monitor rate limits in usage dashboard
-
-3. **Collections Not Created**
-   - Verify `auto_create` is enabled in config
-   - Check Plex permissions
-   - Review scan logs for errors
-
-4. **High API Costs**
-   - Reduce batch size
-   - Use cheaper models like `gpt-3.5-turbo`
-   - Run incremental scans instead of full scans
-
-### Logs and Debugging
-
-- **Log Location**: `data/plexcollect.log` (if file logging enabled)
-- **Database**: `data/collections.db` (SQLite database)
-- **Debug Mode**: Set logging level to `DEBUG` in config
 
 ### Environment Variables
 
-You can override configuration with environment variables:
+Override config values with environment variables:
 
 ```bash
+export AI_API_KEY="your-key"        # or OPENAI_API_KEY
+export AI_MODEL="gpt-4o-mini"       # or OPENAI_MODEL
 export PLEX_SERVER_URL="http://your-plex-server:32400"
 export PLEX_TOKEN="your-token"
-export OPENAI_API_KEY="your-key"
-```
-
-## Advanced Usage
-
-### Custom Categories
-
-Create highly specific categories by customizing the classification prompts:
-
-```yaml
-- name: "Heist Movies with Tropical Settings"
-  description: "Movies featuring heists in tropical or beach locations"
-  prompt: "Is this a heist/crime movie that takes place in a tropical location, beach setting, or island?"
-```
-
-### Scheduled Scans
-
-Enable automatic scanning in configuration:
-
-```yaml
-scheduling:
-  auto_scan_enabled: true
-  scan_interval_hours: 24
-  scan_time: "02:00"  # 2 AM daily
-```
-
-### API Rate Optimization
-
-For large libraries, optimize API usage:
-
-```yaml
-openai:
-  batch_size: 20          # Maximum items per request
-  rate_limit:
-    requests_per_minute: 60
-    tokens_per_minute: 90000
 ```
 
 ## Development
@@ -251,124 +188,77 @@ openai:
 
 ```
 project_PLEXCollect/
-├── main.py                   # Streamlit web application
-├── config.yaml              # Configuration file
-├── requirements.txt          # Python dependencies
-├── api/                      # Core API modules
-│   ├── plex_client.py        # Plex server integration
-│   ├── openai_client.py      # OpenAI API client
-│   ├── collection_manager.py # Main orchestrator
-│   └── database.py           # Database operations
-├── models/                   # Data models
-│   └── database_models.py    # SQLAlchemy models
-├── utils/                    # Utility modules
-│   ├── config.py             # Configuration management
-│   └── logger.py             # Logging utilities
-└── data/                     # Local data storage
-    ├── collections.db        # SQLite database
-    └── plexcollect.log       # Log files
+├── main.py                    # Streamlit web application
+├── config.yaml                # Configuration (from config.example.yml)
+├── requirements.txt           # Python dependencies
+├── api/
+│   ├── plex_client.py         # Plex server integration
+│   ├── openai_client.py       # AI client (mega-batch + NL search)
+│   ├── collection_manager.py  # Main orchestrator
+│   └── database.py            # Database operations
+├── models/
+│   └── database_models.py     # SQLAlchemy models
+├── utils/
+│   ├── config.py              # Configuration management
+│   └── logger.py              # Logging utilities
+├── tests/                     # Test suite
+└── data/
+    ├── collections.db         # SQLite database
+    └── plexcollect.log        # Log files
+```
+
+### Running Tests
+
+```bash
+python -m pytest tests/ -v
 ```
 
 ### Database Schema
 
-- **MediaItems**: Plex media with metadata
-- **CollectionCategories**: Classification rules and prompts
-- **ItemClassifications**: AI classification results
-- **ScanHistory**: Scan tracking and statistics
-- **AIProcessingLog**: API usage and cost tracking
+- **MediaItems** -- Plex media with metadata
+- **CollectionCategories** -- Classification rules, prompts, and NL queries
+- **ItemClassifications** -- AI classification results
+- **ScanHistory** -- Scan tracking and statistics
+- **AIProcessingLog** -- API usage and cost tracking
 
-## Security Considerations
+## Troubleshooting
 
-- **Local Only**: All data stays on your local machine
-- **API Keys**: Store securely, never commit to version control
-- **Network**: Consider VPN if accessing remote Plex server
-- **Permissions**: Run with minimal required permissions
+1. **Plex Connection Failed** -- Verify server URL, token, and network connectivity
+2. **AI API Errors** -- Check API key, billing status, and rate limits
+3. **Collections Not Created** -- Verify `auto_create` is enabled and Plex permissions are correct
+4. **Logs**: `data/plexcollect.log` | **Database**: `data/collections.db`
 
-## 🤝 Contributing
+## Backward Compatibility
 
-We welcome contributions! PLEXCollect is designed to benefit the entire Plex community.
+If upgrading from an older version:
+- Config files using `openai:` key are automatically mapped to `ai:`
+- Environment variables `OPENAI_API_KEY` and `OPENAI_MODEL` still work
+- Existing database is migrated automatically on first run
 
-### Quick Start for Contributors
-1. **Fork the repository** on GitHub
-2. **Clone your fork** and create a feature branch
-3. **Make your changes** and add tests
-4. **Test thoroughly** with your own Plex library  
-5. **Submit a pull request** with a clear description
+## Contributing
 
-### Ways to Contribute
-- 🐛 **Bug Reports**: Found an issue? Let us know!
-- 💡 **Feature Requests**: Have ideas for new collections or features?
-- 🎬 **New Collection Categories**: Share your custom category prompts
-- 📚 **Documentation**: Help improve guides and examples
-- 🧪 **Testing**: Help test with different library configurations
-- 🎨 **UI/UX**: Improve the Streamlit interface
+1. Fork the repository
+2. Create a feature branch
+3. Make changes and add tests
+4. Submit a pull request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
-### Popular Contribution Ideas
-- Support for additional AI providers (Anthropic Claude, etc.)
-- New franchise collections (DC, Horror franchises, etc.)
-- Advanced sorting options (by IMDB rating, decade, etc.)
-- Integration with other media management tools
+### Contribution Ideas
+- Support for additional AI providers (Anthropic Claude, Google Gemini, local models)
+- New vibe category presets
+- Advanced sorting options
 - Mobile-responsive UI improvements
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License -- see [LICENSE](LICENSE) for details.
 
-Please respect OpenAI's usage policies and Plex's terms of service when using this software.
+## Acknowledgments
 
-## 💬 Support & Community
-
-### Getting Help
-1. **📖 Check the Documentation**: Start with this README and troubleshooting section
-2. **🔍 Search Issues**: Look through existing GitHub issues for solutions
-3. **💬 GitHub Discussions**: Ask questions and share ideas
-4. **🐛 Report Bugs**: Create a detailed issue report
-5. **📧 Review Logs**: Check `data/plexcollect.log` for error details
-
-### Community Resources
-- **GitHub Issues**: Bug reports and feature requests
-- **GitHub Discussions**: General questions and community chat
-- **Contributing Guide**: See [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Security Policy**: See [docs/SECURITY.md](docs/SECURITY.md) (coming soon)
-
-### Commercial Support
-This is a community-driven open source project. For enterprise features or priority support, consider:
-- Contributing to the project
-- Sponsoring development
-- Hiring contributors for custom implementations
-
-## 🙏 Acknowledgments
-
-### Core Technologies
-- [PlexAPI](https://github.com/pkkid/python-plexapi) - Excellent Python library for Plex integration
-- [OpenAI API](https://openai.com/api/) - Powerful AI models for intelligent classification
-- [Streamlit](https://streamlit.io/) - Amazing framework for building web interfaces
-- [SQLAlchemy](https://sqlalchemy.org/) - Robust database operations and ORM
-
-### Inspiration & Community
-- The Plex community for endless creativity in media organization
-- OpenAI for democratizing access to powerful AI models
-- All the contributors who help make this project better
-
-### Special Thanks
-- Everyone who helped test and refine the mega-batch optimization
-- The franchise movie fans who provided chronological ordering feedback
-- Beta testers who helped identify and fix critical bugs
+- [PlexAPI](https://github.com/pkkid/python-plexapi) -- Python library for Plex integration
+- [OpenAI API](https://openai.com/api/) -- AI models for classification
+- [Streamlit](https://streamlit.io/) -- Web interface framework
+- [SQLAlchemy](https://sqlalchemy.org/) -- Database ORM
 
 ---
 
-## 🌟 Show Your Support
-
-If PLEXCollect has helped organize your media library:
-
-- ⭐ **Star this repository** to help others discover it
-- 🐛 **Report bugs** to help improve the project  
-- 💡 **Share feature ideas** to guide development
-- 🤝 **Contribute code** to make it even better
-- 📢 **Tell your friends** about automated Plex collections
-
-**Happy collecting! 🎬✨**
-
-*Made with ❤️ for the Plex community*
+*Made for Plex users who want collections based on vibes, not just metadata.*

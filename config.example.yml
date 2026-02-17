@@ -8,11 +8,12 @@ plex:
     - "Movies"
     - "TV Shows"
 
-openai:
+ai:
+  provider: "openai"  # AI provider (currently only openai supported)
   api_key: "YOUR_OPENAI_API_KEY_HERE"  # Your OpenAI API key (starts with sk-proj- or sk-)
-  model: "o4-mini"  # Model to use: o4-mini (recommended), o1-mini, gpt-4o-mini, gpt-4o, gpt-4
-  max_tokens: 4000  # Max tokens per response (ignored for o1/o4 models but kept for compatibility)
-  temperature: 0.1  # Model creativity (0.0-1.0, lower = more consistent, ignored for o1/o4 models)
+  model: "gpt-4o-mini"  # Model to use: gpt-4o-mini (recommended, cheapest), gpt-4o, o4-mini
+  max_tokens: 4000  # Max tokens per response
+  temperature: 0.3  # Model creativity (0.0-1.0, higher = more creative vibe matching)
   batch_size: 10  # Number of items to process per batch (recommended: 5-20)
   rate_limit:
     requests_per_minute: 20  # Adjust based on your OpenAI tier
@@ -20,59 +21,46 @@ openai:
 
 collections:
   default_categories:
-    # Holiday Collections
-    - name: "Christmas Movies"
-      description: "Movies with Christmas themes, settings, or holiday spirit"
-      prompt: "Is this a Christmas movie or does it have significant Christmas themes?"
-    
-    - name: "Halloween Movies"
-      description: "Movies perfect for Halloween viewing - horror, thriller, or spooky themes"
-      prompt: "Is this a movie suitable for Halloween viewing with horror, thriller, or spooky themes?"
-    
-    - name: "Thanksgiving Movies"
-      description: "Movies with Thanksgiving themes or family gathering themes"
-      prompt: "Is this a Thanksgiving movie or does it prominently feature Thanksgiving themes, family gatherings, or gratitude?"
-    
-    # Major Franchise Collections (Chronological Order)
-    - name: "Star Wars Saga"
-      description: "Star Wars movies in chronological story order"
-      prompt: "Is this a Star Wars movie? If yes, what is its chronological position in the Star Wars timeline?"
-      franchise: true
-      
-    - name: "Marvel Cinematic Universe"
-      description: "MCU movies in chronological timeline order"
-      prompt: "Is this an MCU (Marvel Cinematic Universe) movie? If yes, where does it fit in the MCU timeline?"
-      franchise: true
-      
-    - name: "Indiana Jones Adventures"
-      description: "Indiana Jones movies in chronological story order"
-      prompt: "Is this an Indiana Jones movie? If yes, what is its chronological position in Indiana Jones' adventures?"
-      franchise: true
-      
-    - name: "Fast & Furious Franchise"
-      description: "Fast & Furious movies in chronological story order"
-      prompt: "Is this a Fast & Furious franchise movie? If yes, where does it fit chronologically in the story timeline?"
-      franchise: true
-      
-    - name: "DC Extended Universe"
-      description: "DCEU movies in chronological timeline order"
-      prompt: "Is this a DC Extended Universe (DCEU) movie? If yes, where does it fit in the DCEU timeline?"
-      franchise: true
-      
-    - name: "Mission: Impossible Series"
-      description: "Mission: Impossible movies in chronological order"
-      prompt: "Is this a Mission: Impossible movie? If yes, what is its chronological position in the series?"
-      franchise: true
-      
-    - name: "James Bond Collection"
-      description: "James Bond movies grouped by era and chronological order"
-      prompt: "Is this a James Bond movie? If yes, which Bond era and chronological position?"
-      franchise: true
-      
-    - name: "X-Men Universe"
-      description: "X-Men movies in chronological timeline order"
-      prompt: "Is this an X-Men universe movie? If yes, where does it fit in the X-Men timeline?"
-      franchise: true
+    # Vibe-Based Collections — what AI uniquely enables
+    - name: "Cozy Comfort Movies"
+      description: "Warm, comforting movies perfect for a blanket-and-tea evening"
+      prompt: "Does this movie have a cozy, comforting vibe? Think warm lighting, gentle pacing, themes of home/family/belonging, feel-good endings. Examples: Amelie, The Holiday, Paddington, When Harry Met Sally. Consider the overall emotional warmth, not just genre."
+
+    - name: "Mind-Bending Movies"
+      description: "Movies that make you question reality or demand a second viewing"
+      prompt: "Is this a mind-bending movie? Look for unreliable narrators, plot twists that recontextualize everything, non-linear timelines, reality-questioning themes, or complex puzzles. Examples: Inception, Memento, Eternal Sunshine, Mulholland Drive. The movie should leave viewers thinking long after credits roll."
+
+    - name: "Visually Stunning"
+      description: "Films celebrated for breathtaking cinematography and visual artistry"
+      prompt: "Is this film known for exceptional visual beauty or cinematography? Consider sweeping landscapes, innovative visual effects, distinctive color palettes, artistic composition, or groundbreaking visual storytelling. Examples: Blade Runner 2049, Hero, Life of Pi, Mad Max: Fury Road. The visuals should be a primary reason to watch."
+
+    - name: "Date Night Movies"
+      description: "Perfect picks for a romantic evening — charming, engaging, universally enjoyable"
+      prompt: "Is this a good date night movie? It should be engaging for two people, have romantic elements or chemistry, not be too dark or disturbing, and spark conversation. Think rom-coms, witty dramas, charming adventures. Examples: The Princess Bride, Crazy Rich Asians, La La Land, About Time. Avoid heavy trauma or extreme violence."
+
+    - name: "Background Vibes"
+      description: "Movies that work beautifully as ambient background — great aesthetics, low attention required"
+      prompt: "Does this movie work well as background viewing? Look for beautiful visuals, great soundtracks, low plot complexity, pleasant atmosphere. Think nature docs, slice-of-life, gentle comedies, visually rich films you don't need to follow closely. Examples: The Secret Life of Walter Mitty, Chef, Midnight in Paris, Studio Ghibli films."
+
+    - name: "Emotional Gut Punches"
+      description: "Powerful films that will absolutely wreck you emotionally — in the best way"
+      prompt: "Is this a deeply emotional movie that hits hard? Look for devastating plot turns, profound themes of loss/sacrifice/love, performances that make you cry, bittersweet endings. Examples: Schindler's List, Up, Manchester by the Sea, Grave of the Fireflies. The emotional impact should be the defining feature."
+
+    - name: "Hidden Gems"
+      description: "Underrated or lesser-known films that deserve more attention"
+      prompt: "Is this likely a hidden gem — a great movie that most people haven't seen? Consider: not a major blockbuster, not widely referenced in pop culture, received critical acclaim or cult following but flew under the radar. Exclude any movie that was a top-10 box office hit or is universally known. Look for indie films, foreign cinema, overlooked releases."
+
+    - name: "Adrenaline Rush"
+      description: "Non-stop action and intensity — perfect when you want pure excitement"
+      prompt: "Is this a high-adrenaline movie with non-stop action or intensity? Look for chase sequences, fight choreography, edge-of-seat tension, fast pacing. Examples: John Wick, The Raid, Mission Impossible: Fallout, Top Gun: Maverick. The movie should keep your heart rate elevated throughout."
+
+    - name: "Late Night Weird"
+      description: "Bizarre, surreal, or cult films perfect for late-night viewing"
+      prompt: "Is this a weird, surreal, or cult movie that's best watched late at night? Look for bizarre premises, surreal imagery, cult followings, experimental storytelling, dark comedy, or anything that makes you say 'what did I just watch?' Examples: The Rocky Horror Picture Show, Donnie Darko, Sorry to Bother You, Everything Everywhere All at Once."
+
+    - name: "Kids Can Watch Too"
+      description: "Family-friendly films that adults genuinely enjoy — not just tolerate"
+      prompt: "Is this a family-friendly movie that adults also genuinely enjoy? It should be appropriate for children (no graphic violence, sex, or heavy themes) but also have enough wit, emotion, or craft to entertain adults. Examples: Toy Story, The Incredibles, Spider-Verse, How to Train Your Dragon. Exclude films that are purely for very young children with no adult appeal."
 
   auto_create: true  # Automatically create collections that don't exist in Plex
   update_existing: true  # Update existing collections with new items
@@ -96,7 +84,7 @@ logging:
   backup_count: 5  # Number of backup log files to keep
 
 # Configuration Notes:
-# 
+#
 # Getting Your Plex Token:
 # 1. Open Plex Web (usually at http://localhost:32400/web)
 # 2. Go to Settings > General > Advanced
@@ -110,23 +98,17 @@ logging:
 # 4. Note: API usage costs money based on tokens used
 #
 # Model Recommendations:
-# - o4-mini: Best reasoning model with large response window (recommended)
-# - o1-mini: Good reasoning model, slightly more expensive
-# - gpt-4o-mini: Cheapest option, but smaller response window
-# - gpt-4o: More expensive but higher quality
+# - gpt-4o-mini: Best value — cheapest option with great quality (recommended)
+# - gpt-4o: Higher quality, ~50x more expensive than gpt-4o-mini
+# - o4-mini: Best reasoning model, good for complex classifications
 #
-# Rate Limiting:
-# - Adjust based on your OpenAI subscription tier
-# - Free tier: Much lower limits
-# - Paid tier: Higher limits as shown in example
+# Vibe Collections:
+# - These are subjective, taste-based categories that AI uniquely enables
+# - Each prompt is tuned to help the AI understand the "vibe" you're going for
+# - Customize prompts to match your personal taste
+# - Use the Collection Builder to create custom collections with natural language
 #
-# Cost Optimization Tips:
-# - Use smaller batch_size for testing (5-10)
-# - Use cheaper models like gpt-4o-mini for initial testing
-# - Run incremental scans instead of full library scans
-# - Monitor costs in the Statistics page of the web interface
-#
-# Franchise Collections:
-# - Set franchise: true for collections that should be ordered chronologically
-# - PLEXCollect will automatically order these by story timeline, not release date
-# - For example: Star Wars Episode I comes before Episode IV chronologically
+# Cost Estimates (gpt-4o-mini):
+# - 500 movies, 10 categories: ~$0.02-0.05 per full scan
+# - 2000 movies, 10 categories: ~$0.10-0.20 per full scan
+# - Incremental scans (new items only) cost a fraction of full scans

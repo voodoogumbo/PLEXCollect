@@ -67,10 +67,10 @@ class CollectionCategory(Base):
     update_existing = Column(Boolean, default=True)
     collection_mode = Column(String(50), default="default")  # default, hide, hideItems, showItems
     collection_order = Column(String(50), default="release")  # release, alpha, custom
-    
-    # Franchise settings
-    is_franchise = Column(Boolean, default=False, index=True)  # Is this a franchise collection?
-    chronological_sorting = Column(Boolean, default=False)  # Use chronological order instead of release order
+
+    # Source tracking
+    source = Column(String(50), default="config")  # "config" or "natural_language"
+    natural_language_query = Column(Text, nullable=True)  # Original NL query if source is "natural_language"
     
     # Statistics
     item_count = Column(Integer, default=0)

@@ -16,19 +16,22 @@ class RateLimitConfig(BaseModel):
     requests_per_minute: int = Field(default=20, description="Max requests per minute")
     tokens_per_minute: int = Field(default=40000, description="Max tokens per minute")
 
-class OpenAIConfig(BaseModel):
-    api_key: str = Field(..., description="OpenAI API key")
-    model: str = Field(default="gpt-4", description="Model to use")
-    max_tokens: int = Field(default=500, description="Max tokens per response")
+class AIConfig(BaseModel):
+    provider: str = Field(default="openai", description="AI provider (openai)")
+    api_key: str = Field(..., description="AI provider API key")
+    model: str = Field(default="gpt-4o-mini", description="Model to use")
+    max_tokens: int = Field(default=4000, description="Max tokens per response")
     temperature: float = Field(default=0.1, description="Model temperature")
     batch_size: int = Field(default=10, description="Batch size for processing")
     rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig)
+
+# Backward compatibility alias
+OpenAIConfig = AIConfig
 
 class CollectionCategory(BaseModel):
     name: str = Field(..., description="Collection name")
     description: str = Field(..., description="Collection description")
     prompt: str = Field(..., description="AI classification prompt")
-    franchise: bool = Field(default=False, description="Is this a franchise collection requiring chronological ordering?")
 
 class CollectionsConfig(BaseModel):
     default_categories: List[CollectionCategory] = Field(default_factory=list)
@@ -55,7 +58,7 @@ class LoggingConfig(BaseModel):
 
 class AppConfig(BaseModel):
     plex: PlexConfig
-    openai: OpenAIConfig
+    ai: AIConfig
     collections: CollectionsConfig = Field(default_factory=CollectionsConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
     scheduling: SchedulingConfig = Field(default_factory=SchedulingConfig)
@@ -69,83 +72,96 @@ class AppConfig(BaseModel):
             raise ValueError("Plex token is required")
         return v
 
-    @validator('openai')
-    def validate_openai_config(cls, v):
+    @validator('ai')
+    def validate_ai_config(cls, v):
         if not v.api_key:
-            raise ValueError("OpenAI API key is required")
+            raise ValueError("AI API key is required")
         return v
 
 class ConfigManager:
     """Manages application configuration."""
-    
+
     def __init__(self, config_path: str = "config.yaml"):
         self.config_path = Path(config_path)
         self._config: Optional[AppConfig] = None
-    
+
     def load_config(self) -> AppConfig:
         """Load configuration from file."""
         if not self.config_path.exists():
             raise FileNotFoundError(f"Configuration file not found: {self.config_path}")
-        
+
         try:
             with open(self.config_path, 'r') as f:
                 config_data = yaml.safe_load(f)
-            
+
+            # Backward compatibility: map 'openai' key to 'ai'
+            if 'openai' in config_data and 'ai' not in config_data:
+                config_data['ai'] = config_data.pop('openai')
+                config_data['ai'].setdefault('provider', 'openai')
+
             # Check for environment variable overrides
             self._apply_env_overrides(config_data)
-            
+
             self._config = AppConfig(**config_data)
             return self._config
-            
+
         except yaml.YAMLError as e:
             raise ValueError(f"Invalid YAML in config file: {e}")
         except Exception as e:
             raise ValueError(f"Error loading config: {e}")
-    
+
     def _apply_env_overrides(self, config_data: Dict[str, Any]) -> None:
         """Apply environment variable overrides to config."""
-        
+
         # Plex overrides
         if os.getenv("PLEX_SERVER_URL"):
             config_data.setdefault("plex", {})["server_url"] = os.getenv("PLEX_SERVER_URL")
         if os.getenv("PLEX_TOKEN"):
             config_data.setdefault("plex", {})["token"] = os.getenv("PLEX_TOKEN")
-        
-        # OpenAI overrides
-        if os.getenv("OPENAI_API_KEY"):
-            config_data.setdefault("openai", {})["api_key"] = os.getenv("OPENAI_API_KEY")
-        if os.getenv("OPENAI_MODEL"):
-            config_data.setdefault("openai", {})["model"] = os.getenv("OPENAI_MODEL")
-    
+
+        # AI overrides (new style)
+        if os.getenv("AI_PROVIDER"):
+            config_data.setdefault("ai", {})["provider"] = os.getenv("AI_PROVIDER")
+        if os.getenv("AI_API_KEY"):
+            config_data.setdefault("ai", {})["api_key"] = os.getenv("AI_API_KEY")
+        if os.getenv("AI_MODEL"):
+            config_data.setdefault("ai", {})["model"] = os.getenv("AI_MODEL")
+
+        # Backward compatibility: OPENAI_* env vars as fallbacks
+        if os.getenv("OPENAI_API_KEY") and not os.getenv("AI_API_KEY"):
+            config_data.setdefault("ai", {})["api_key"] = os.getenv("OPENAI_API_KEY")
+        if os.getenv("OPENAI_MODEL") and not os.getenv("AI_MODEL"):
+            config_data.setdefault("ai", {})["model"] = os.getenv("OPENAI_MODEL")
+
     def get_config(self) -> AppConfig:
         """Get the current configuration, loading if necessary."""
         if self._config is None:
             self._config = self.load_config()
         return self._config
-    
+
     def reload_config(self) -> AppConfig:
         """Reload configuration from file."""
         self._config = None
         return self.load_config()
-    
+
     def validate_config(self) -> List[str]:
         """Validate configuration and return any issues."""
         issues = []
-        
+
         try:
             config = self.get_config()
-            
+
             # Test Plex connection
             if not config.plex.server_url.startswith(('http://', 'https://')):
                 issues.append("Plex server URL must start with http:// or https://")
-            
-            # Validate OpenAI settings
-            if config.openai.temperature < 0 or config.openai.temperature > 2:
-                issues.append("OpenAI temperature must be between 0 and 2")
-            
-            if config.openai.batch_size < 1 or config.openai.batch_size > 100:
-                issues.append("OpenAI batch size must be between 1 and 100")
-            
+
+            # Validate AI settings
+            if config.ai.temperature < 0 or config.ai.temperature > 2:
+                issues.append("AI temperature must be between 0 and 2")
+
+            if config.ai.batch_size < 1 or config.ai.batch_size > 100:
+                issues.append("AI batch size must be between 1 and 100")
+
             # Validate database path
             db_dir = Path(config.database.path).parent
             if not db_dir.exists():
@@ -153,10 +169,10 @@ class ConfigManager:
                     db_dir.mkdir(parents=True, exist_ok=True)
                 except Exception as e:
                     issues.append(f"Cannot create database directory: {e}")
-            
+
         except Exception as e:
             issues.append(f"Configuration validation error: {e}")
-        
+
         return issues
 
 # Global config manager instance
